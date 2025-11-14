@@ -2,7 +2,6 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![React](https://img.shields.io/badge/React-19.2.0-blue.svg)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)](https://www.typescriptlang.org/)
 [![Vite](https://img.shields.io/badge/Vite-7.2.2-646CFF.svg)](https://vitejs.dev/)
 [![SQLite](https://img.shields.io/badge/SQLite-3-green.svg)](https://www.sqlite.org/)
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
@@ -13,192 +12,180 @@
 
 **[View Live Application](https://ledgerlens.vercel.app)** (Coming soon)
 
-## 📸 Screenshots
+## 📸 Features
 
-### Dashboard Overview
-![Dashboard Overview](https://via.placeholder.com/800x400?text=Dashboard+Overview)
-
-### Interactive Charts
-![Interactive Charts](https://via.placeholder.com/800x400?text=Interactive+Charts)
-
-### Data Tables
-![Data Tables](https://via.placeholder.com/800x400?text=Data+Tables)
-
-## 🎯 Features
-
-- ✅ **SQL-First Architecture**: Clean data transformations using SQL views
-- ✅ **Interactive Visualizations**: Dynamic charts with Recharts library
-- ✅ **Real-Time KPIs**: Month-over-month growth metrics and business insights
+- ✅ **SQL-First Architecture**: Clean data transformations using SQL views and window functions
+- ✅ **Interactive Visualizations**: Dynamic charts with Recharts library (line, bar, stacked bar)
+- ✅ **Real-Time KPIs**: Month-over-month growth metrics with date range filtering
 - ✅ **Responsive Design**: Mobile-first approach with dark mode support
-- ✅ **Type-Safe**: Full TypeScript implementation
+- ✅ **Date Range Filtering**: Filter data by custom date ranges with intuitive dropdowns
+- ✅ **Searchable Data Tables**: Explore detailed data with search and sorting capabilities
 - ✅ **CI/CD Pipeline**: Automated testing and deployment via GitHub Actions
-- ✅ **Comprehensive Testing**: 70%+ test coverage
-- ✅ **Production Ready**: Deployed on Vercel
+- ✅ **Production Ready**: Deployed on Vercel with optimized build
 
 ## 📊 Tech Stack
 
-- **Frontend**: React 19, TypeScript, Vite, Recharts
-- **Backend**: Python, SQLite, Pandas, Matplotlib
+- **Frontend**: React 19, Vite, Recharts, Custom Hooks
+- **Backend**: Python 3.8+, SQLite, Pandas, Matplotlib
 - **DevOps**: GitHub Actions, Vercel
 - **Testing**: Vitest, React Testing Library
 
-LedgerLens is a SQL-first mini analytics warehouse that ships with:
+## 🎯 What is LedgerLens?
 
-- SQLite database with the UK Online Retail dataset (2010–2011)
-- SQL transformations for clean orders, monthly KPIs, and SKU ABC segmentation
-- Python export of PNG charts and CSVs
-- Minimal React viewer to browse charts and download data
+LedgerLens is a SQL-first mini analytics warehouse that processes **531K+ e-commerce transactions** through a complete data pipeline:
 
-## Project Layout
+1. **Data Ingestion**: Raw CSV → SQLite database
+2. **Data Transformation**: SQL-based ETL with 6 analytical views
+3. **Data Visualization**: Interactive React dashboard with real-time filtering
+4. **Business Intelligence**: ABC classification, MoM growth, customer segmentation
+
+### Key Metrics
+
+- **531,283** clean orders processed (98% data retention)
+- **4,340** unique customers analyzed
+- **3,829** products with ABC classification
+- **38** countries tracked
+- **13 months** of data (Dec 2010 - Dec 2011)
+
+## 🏗️ Project Structure
 
 ```
 ledgerlens/
-  data_raw/ecommerce.csv
-  db/ledgerlens.db
-  sql/
-    00_schema.sql      # Creates orders_raw table schema
-    10_load_clean.sql  # Transforms raw data to clean orders table
-    20_views.sql       # Creates 6 analytical views
-  py/
-    charts.py          # Generates 7 PNG charts and 4 CSV exports
-    requirements.txt
-  web/
-    package.json
-    src/
-      App.jsx          # Main React app with 4-tab navigation
-      components/
-        ChartCard.jsx  # Reusable chart display component
-      assets/          # 7 PNG chart images
-      data/            # 4 CSV data files
+├── data_raw/
+│   └── ecommerce.csv          # Raw e-commerce data (541K+ rows)
+├── db/
+│   └── ledgerlens.db          # SQLite database (excluded from git)
+├── sql/
+│   ├── 00_schema.sql          # Creates orders_raw table schema
+│   ├── 10_load_clean.sql     # Transforms raw data to clean orders
+│   └── 20_views.sql           # Creates 6 analytical views
+├── py/
+│   ├── charts.py              # Generates charts and CSV exports
+│   ├── requirements.txt       # Python dependencies
+│   └── tests/                 # Python unit tests
+└── web/
+    ├── src/
+    │   ├── components/
+    │   │   ├── InteractiveChart.jsx    # Reusable chart component
+    │   │   ├── DateRangeSelector.jsx    # Date filtering component
+    │   │   ├── KPICard.jsx              # KPI display component
+    │   │   └── SearchableTable.jsx     # Data table component
+    │   ├── hooks/
+    │   │   ├── useCsvData.js           # CSV data fetching hook
+    │   │   ├── useTheme.js             # Dark/light theme hook
+    │   │   └── useMediaQuery.js        # Responsive breakpoints hook
+    │   ├── utils/
+    │   │   └── dateFormatters.js       # Date formatting utilities
+    │   ├── data/                        # CSV data files
+    │   └── App.jsx                      # Main React application
+    └── package.json
 ```
 
-## 1. Set up environment & load data
+## 🚀 Quick Start
 
-```bash
-cd ledgerlens
+### Prerequisites
 
-# Create Python virtual environment
-python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-pip install -r py/requirements.txt
+- Python 3.8+ with `pip`
+- Node.js 18+ with `npm`
+- SQLite3 command-line tool
+- `sqlite-utils` Python package
 
-# Initialize database and load data
-sqlite3 db/ledgerlens.db < sql/00_schema.sql
-sqlite-utils insert db/ledgerlens.db orders_raw data_raw/ecommerce.csv --csv
-sqlite3 db/ledgerlens.db < sql/10_load_clean.sql
-sqlite3 db/ledgerlens.db < sql/20_views.sql
-```
+### Installation
 
-**What happens:**
-- `00_schema.sql`: Creates `orders_raw` table structure
-- `sqlite-utils`: Loads CSV with Latin-1 encoding (handles special characters)
-- `10_load_clean.sql`: Transforms raw data with:
-  - Date parsing (MM/DD/YYYY → ISO format)
-  - Derived columns: `order_date`, `order_month`, `order_year`, `is_export`
-  - Revenue calculations: `gross_revenue`, `cogs`, `gross_profit`
-  - Filters: removes negative quantities, cancellations (InvoiceNo starting with 'C')
-- `20_views.sql`: Creates 6 analytical views (see Views section below)
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/Hleake117/E-Commerce-Data.git
+   cd E-Commerce-Data/ledgerlens
+   ```
 
-## 2. Generate charts & CSVs
+2. **Set up Python environment**:
+   ```bash
+   python -m venv .venv
+   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+   pip install -r py/requirements.txt
+   pip install sqlite-utils  # For CSV import with proper encoding
+   ```
 
-```bash
-cd py
-python charts.py
-```
+3. **Initialize database and load data**:
+   ```bash
+   sqlite3 db/ledgerlens.db < sql/00_schema.sql
+   sqlite-utils insert db/ledgerlens.db orders_raw data_raw/ecommerce.csv --csv
+   sqlite3 db/ledgerlens.db < sql/10_load_clean.sql
+   sqlite3 db/ledgerlens.db < sql/20_views.sql
+   ```
 
-**Exports 7 PNG charts to `web/src/assets/`:**
-- `rev_gp.png`: Revenue vs Gross Profit line chart (monthly trends)
-- `revenue_mom.png`: Revenue with Month-over-Month growth annotations
-- `domestic_export.png`: Domestic vs Export revenue stacked bars
-- `aov.png`: Average Order Value trend over time
-- `top_countries.png`: Top 10 countries by revenue (horizontal bar)
-- `top_customers.png`: Top 15 customers by lifetime revenue
-- `top_skus.png`: Top 20 SKUs with ABC classification color coding
+4. **Generate charts and CSV exports**:
+   ```bash
+   cd py
+   python charts.py
+   ```
 
-**Exports 4 CSV files to `web/src/data/`:**
-- `orders_month.csv`: Monthly KPIs (13 rows, one per month)
-- `country_summary.csv`: Revenue breakdown by country (38 countries)
-- `top_customers.csv`: Top 50 customers by revenue
-- `sku_abc.csv`: All SKUs with ABC classification (3,829 SKUs)
+5. **Set up and run the React app**:
+   ```bash
+   cd ../web
+   npm install
+   npm run dev
+   ```
 
-## 3. Run the React viewer
+6. **Open your browser**:
+   Navigate to `http://localhost:5173` (or the URL shown in terminal)
 
-```bash
-cd ../web
-npm install
-npm run dev
-```
-
-Open the local URL displayed in the terminal (typically `http://localhost:5173`).
-
-## Dashboard Tabs
-
-The React app has 4 tabs:
+## 📊 Dashboard Features
 
 ### Overview Tab
-- **Revenue vs Gross Profit**: Monthly comparison of revenue and profit trends
-- **Revenue MoM Growth**: Month-over-month revenue growth with percentage annotations
-- **Domestic vs Export Revenue**: UK domestic vs international export breakdown
-- **Average Order Value**: AOV trend over the 13-month period
+- **KPI Cards**: Total Revenue, Gross Profit, Average AOV, Total Orders
+- **Date Range Selector**: Filter data by custom date ranges
+- **Revenue vs Gross Profit**: Interactive line chart showing monthly trends
+- **Revenue MoM Growth**: Month-over-month growth percentage with color coding
+- **Domestic vs Export**: Stacked bar chart showing geographic revenue breakdown
+- **Average Order Value**: Trend line showing AOV over time
 
 ### Markets Tab
-- **Top 10 Countries**: Geographic revenue distribution showing market share
+- **Top 10 Countries**: Horizontal bar chart showing revenue by country
+- **All Countries Table**: Searchable table with revenue, profit, margin, and market share
 
 ### Customers Tab
-- **Top 15 Customers**: Highest-value customers ranked by lifetime revenue
+- **Top 15 Customers**: Bar chart showing highest-value customers
+- **All Customers Table**: Searchable table with customer lifetime value metrics
 
 ### Products Tab
-- **Top 20 SKUs (ABC Classification)**: Product performance with Pareto analysis
+- **Top 20 SKUs**: Bar chart with ABC classification color coding
+- **All SKUs Table**: Searchable table with ABC classification and revenue share
 
-## Database Views
+## 🗄️ Database Views
 
-The project creates 6 analytical views in `20_views.sql`:
+The project creates **6 analytical views** in `sql/20_views.sql`:
 
 ### 1. `v_orders_month`
 Monthly KPIs with growth metrics:
-- `ym`: Year-month (YYYY-MM)
-- `orders`, `buyers`, `units`: Volume metrics
-- `revenue`, `gross_profit`: Financial metrics
-- `gross_margin_pct`: Profit margin percentage
-- `aov`: Average Order Value
-- `revenue_mom_pct`, `gross_profit_mom_pct`, `aov_mom_pct`: Month-over-month growth rates
-- `revenue_domestic`, `revenue_export`: Geographic breakdown
+- Volume metrics: `orders`, `buyers`, `units`
+- Financial metrics: `revenue`, `gross_profit`, `gross_margin_pct`
+- Growth metrics: `revenue_mom_pct`, `gross_profit_mom_pct`, `aov_mom_pct`
+- Geographic breakdown: `revenue_domestic`, `revenue_export`
 
 ### 2. `v_country_summary`
 Revenue breakdown by country:
-- `country`: Country name
-- `orders`, `buyers`, `units`: Volume metrics
-- `revenue`, `gross_profit`: Financial metrics
-- `gross_margin_pct`: Profit margin
-- `aov`: Average Order Value
-- `revenue_share`: Percentage of total revenue
+- Country-level metrics with revenue share
+- Market share calculations
+- 38 countries tracked
 
 ### 3. `v_customer_value`
 Individual customer lifetime value metrics:
-- `customer_id`: Customer identifier
-- `orders`, `units`: Purchase history
-- `revenue`, `gross_profit`: Lifetime value
-- `avg_order_value`: Average spend per order
-- `first_order_date`, `last_order_date`: Customer tenure
-- `active_days`: Days between first and last order
-- `revenue_per_active_month`: Revenue normalized by active period
-- `revenue_rank`: Rank by total revenue
+- Customer tenure: `first_order_date`, `last_order_date`, `active_days`
+- Lifetime value: `revenue`, `gross_profit`, `avg_order_value`
+- Revenue ranking and normalized metrics
 
 ### 4. `v_top_customers`
-Top 50 customers filtered from `v_customer_value` (same columns)
+Top 50 customers filtered from `v_customer_value`
 
 ### 5. `v_sku_abc`
 SKU Pareto analysis with ABC classification:
-- `sku`: Product stock code
-- `units`, `revenue`, `gross_profit`: Product metrics
-- `revenue_share`: Percentage of total revenue
-- `cum_share`: Cumulative revenue share (for Pareto analysis)
-- `abc_class`: Classification:
-  - **Class A**: Top 80% of revenue (cum_share ≤ 0.80)
-  - **Class B**: 80-95% of revenue (0.80 < cum_share ≤ 0.95)
-  - **Class C**: Bottom 5% of revenue (cum_share > 0.95)
+- **Class A**: Top 80% of revenue (high priority)
+- **Class B**: 80-95% of revenue (medium priority)
+- **Class C**: Bottom 5% of revenue (low priority)
+- Cumulative revenue share for Pareto analysis
 
-## Metric Definitions
+## 📈 Key Metrics & Definitions
 
 ### Month-over-Month (MoM) Growth
 Percentage change from previous month:
@@ -207,96 +194,29 @@ MoM Growth = (Current Month - Previous Month) / Previous Month × 100
 ```
 - Positive values (green) indicate growth
 - Negative values (red) indicate decline
-- First month has no previous month, so MoM is NULL
 
 ### ABC Classification (Pareto Analysis)
-Product segmentation based on revenue contribution:
-- **Class A**: Products contributing to top 80% of revenue (high priority)
-- **Class B**: Products contributing to 80-95% of revenue (medium priority)
-- **Class C**: Products contributing to bottom 5% of revenue (low priority)
-
-This follows the 80/20 rule (Pareto Principle) where a small number of products drive most revenue.
+Product segmentation following the 80/20 rule:
+- **Class A**: Products driving top 80% of revenue
+- **Class B**: Products driving 80-95% of revenue
+- **Class C**: Products driving bottom 5% of revenue
 
 ### Average Order Value (AOV)
-Average revenue per order:
 ```
 AOV = Total Revenue / Number of Orders
 ```
 
 ### Gross Margin
-Profitability metric:
 ```
 Gross Margin % = (Gross Profit / Revenue) × 100
 ```
-Where `Gross Profit = Revenue - COGS` (Cost of Goods Sold estimated at 60% of revenue)
-
-### Domestic vs Export
-- **Domestic**: Orders from United Kingdom
-- **Export**: Orders from all other countries
-
-## Data Quality
-
-- **Raw rows**: 541,909
-- **Clean orders**: 531,283 (98% retention after filtering)
-- **Date range**: December 2010 - December 2011 (13 months)
-- **Unique customers**: 4,340
-- **Unique SKUs**: 3,829
-- **Countries**: 38
-
-## Workflow Summary
-
-1. **Data Loading**: Raw CSV → SQLite → Clean orders table
-2. **View Creation**: 6 analytical views for different business questions
-3. **Chart Generation**: Python script queries views → generates 7 PNG charts
-4. **CSV Export**: Python script exports 4 CSV files for data download
-5. **Visualization**: React app displays charts in organized tabs with CSV download links
-
-## 🚀 Deployment
-
-### Vercel Deployment
-
-1. **Install Vercel CLI** (optional):
-   ```bash
-   npm i -g vercel
-   ```
-
-2. **Deploy from GitHub**:
-   - Push your code to GitHub
-   - Connect your repository to Vercel
-   - Vercel will automatically detect the Vite configuration
-   - Set build command: `cd ledgerlens/web && npm install && npm run build`
-   - Set output directory: `ledgerlens/web/dist`
-
-3. **Environment Variables**:
-   - No environment variables required for static deployment
-   - CSV files are bundled with the application
-
-4. **Custom Domain** (optional):
-   - Add your domain in Vercel dashboard
-   - Configure DNS settings
-
-### Local Development
-
-```bash
-# Install dependencies
-cd ledgerlens/web
-npm install
-
-# Run development server
-npm run dev
-
-# Build for production
-npm run build
-
-# Preview production build
-npm run preview
-```
+Where `Gross Profit = Revenue - COGS` (COGS estimated at 60% of revenue)
 
 ## 🧪 Testing
 
 ```bash
-# Run tests
-cd ledgerlens/web
+# Run frontend tests
+cd web
 npm test
 
 # Run tests with coverage
@@ -304,155 +224,83 @@ npm run test:coverage
 
 # Run tests in UI mode
 npm run test:ui
+
+# Run Python tests
+cd ../py
+pytest
 ```
 
-## 📊 Architecture
+## 🚀 Deployment
 
-### System Architecture
+### Vercel Deployment
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    Data Pipeline                             │
-├─────────────────────────────────────────────────────────────┤
-│  Raw CSV → SQLite → Clean Data → Analytical Views           │
-│  (ecommerce.csv)  (orders_raw)  (orders)   (6 views)        │
-└─────────────────────────────────────────────────────────────┘
-                            │
-                            ▼
-┌─────────────────────────────────────────────────────────────┐
-│                 Python Chart Generation                      │
-├─────────────────────────────────────────────────────────────┤
-│  Query Views → Pandas DataFrame → Charts/CSVs               │
-│  (SQLite)      (Data Processing)  (PNG/CSV Export)          │
-└─────────────────────────────────────────────────────────────┘
-                            │
-                            ▼
-┌─────────────────────────────────────────────────────────────┐
-│                  React Frontend                              │
-├─────────────────────────────────────────────────────────────┤
-│  CSV Data → Recharts → Interactive Charts                   │
-│  (Static)      (Visualization)  (User Interface)            │
-└─────────────────────────────────────────────────────────────┘
+1. **Connect repository to Vercel**:
+   - Push code to GitHub
+   - Import repository in Vercel dashboard
+   - Vercel will auto-detect Vite configuration
+
+2. **Configure build settings**:
+   - Build command: `cd ledgerlens/web && npm install && npm run build`
+   - Output directory: `ledgerlens/web/dist`
+   - Install command: `cd ledgerlens/web && npm install`
+
+3. **Deploy**:
+   - Vercel will automatically deploy on every push to main branch
+
+### Local Production Build
+
+```bash
+cd web
+npm run build
+npm run preview
 ```
 
-### Data Flow
+## 📚 Documentation
 
-1. **Data Loading**:
-   - Raw CSV data is loaded into SQLite `orders_raw` table
-   - SQL transformations clean and enrich the data
-   - Analytical views are created for different business questions
+- **[ARCHITECTURE.md](./ARCHITECTURE.md)**: System architecture and design decisions
+- **[PROJECT_STATE.md](./PROJECT_STATE.md)**: Current project status and improvements
+- **[RESUME_BULLET_POINTS.md](./RESUME_BULLET_POINTS.md)**: Resume bullet points for data analytics roles
+- **[TESTING.md](./TESTING.md)**: Testing strategy and guidelines
 
-2. **Chart Generation**:
-   - Python script queries SQLite views
-   - Data is processed using Pandas
-   - Charts are exported as PNG images (legacy)
-   - CSVs are exported for interactive charts
+## 🔧 Development
 
-3. **Frontend Display**:
-   - React app loads CSV data
-   - Recharts library renders interactive charts
-   - Users can interact with charts (zoom, tooltips, etc.)
-   - Data tables provide detailed views
+### Adding New Charts
 
-### Technology Stack
+1. Create SQL view in `sql/20_views.sql`
+2. Add CSV export in `py/charts.py`
+3. Add chart component in `web/src/components/`
+4. Import and use in `web/src/App.jsx`
 
-- **Frontend**: React 19, TypeScript, Vite, Recharts
-- **Backend**: Python 3.8+, SQLite, Pandas, Matplotlib
-- **DevOps**: GitHub Actions, Vercel
-- **Testing**: Vitest, React Testing Library
+### Adding New Metrics
 
-### Project Structure
-
-```
-ledgerlens/
-├── data_raw/           # Raw CSV data
-├── db/                 # SQLite database
-├── sql/                # SQL scripts
-│   ├── 00_schema.sql   # Table schema
-│   ├── 10_load_clean.sql  # Data transformation
-│   └── 20_views.sql    # Analytical views
-├── py/                 # Python scripts
-│   ├── charts.py       # Chart generation
-│   └── requirements.txt
-└── web/                # React frontend
-    ├── src/
-    │   ├── components/ # React components
-    │   ├── hooks/      # Custom hooks
-    │   ├── data/       # CSV data files
-    │   └── App.jsx     # Main app
-    └── package.json
-```
-
-## 📝 Requirements
-
-- Python 3.8+ with packages: `pandas`, `matplotlib`, `sqlite3` (standard library)
-- Node.js 18+ with npm
-- SQLite3 command-line tool
-- `sqlite-utils` Python package (for CSV import with proper encoding)
-
-## 🔧 Development Setup
-
-1. **Clone the repository**:
-   ```bash
-   git clone <repository-url>
-   cd ledgerlens
-   ```
-
-2. **Set up Python environment**:
-   ```bash
-   python -m venv .venv
-   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-   pip install -r py/requirements.txt
-   ```
-
-3. **Set up Node.js environment**:
-   ```bash
-   cd web
-   npm install
-   ```
-
-4. **Initialize database**:
-   ```bash
-   cd ..
-   sqlite3 db/ledgerlens.db < sql/00_schema.sql
-   sqlite-utils insert db/ledgerlens.db orders_raw data_raw/ecommerce.csv --csv
-   sqlite3 db/ledgerlens.db < sql/10_load_clean.sql
-   sqlite3 db/ledgerlens.db < sql/20_views.sql
-   ```
-
-5. **Generate charts and CSVs**:
-   ```bash
-   cd py
-   python charts.py
-   ```
-
-6. **Run development server**:
-   ```bash
-   cd ../web
-   npm run dev
-   ```
-
-## 📈 CI/CD Pipeline
-
-The project uses GitHub Actions for continuous integration and deployment:
-
-- **Automated Testing**: Runs tests on every push and PR
-- **Code Quality**: ESLint and TypeScript type checking
-- **Coverage Reports**: Generates test coverage reports
-- **Automated Deployment**: Deploys to Vercel on main branch
-
-See `.github/workflows/ci.yml` for details.
+1. Add calculation to SQL view
+2. Update CSV export in `py/charts.py`
+3. Add visualization in React component
+4. Update documentation
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests for new features
-5. Run tests and ensure coverage is maintained
-6. Submit a pull request
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## 📄 License
 
-MIT License - see LICENSE file for details
+This project is licensed under the MIT License - see the LICENSE file for details.
 
+## 🙏 Acknowledgments
+
+- UK Online Retail Dataset (2010-2011) for sample data
+- Recharts for interactive chart components
+- Vite for fast development experience
+- SQLite for lightweight database solution
+
+## 📞 Contact
+
+For questions or feedback, please open an issue on GitHub.
+
+---
+
+**Built with ❤️ for data analytics and business intelligence**
